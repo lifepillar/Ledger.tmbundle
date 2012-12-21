@@ -3176,7 +3176,7 @@
 					<object class="IBToolTipAttribute" key="NS.object.0">
 						<string key="name">ToolTip</string>
 						<reference key="object" ref="1011235511"/>
-						<string key="toolTip">Collapse multiple postings in each transaction into a single posting.</string>
+						<string key="toolTip">Produce charts and statistics, if available for the given command. Requires R.</string>
 					</object>
 				</object>
 				<boolean value="NO" key="2435.IBNSViewMetadataTranslatesAutoresizingMaskIntoConstraints"/>
