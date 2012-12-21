@@ -21,6 +21,7 @@ module Ledger
       @data_header = 'names(ledger_data) <- c("date","year","month","month_num","wday","wday_num","week","mday","amount","total","payee","account")' + "\n" +
         'ledger_data$date <- as.Date(ledger_data$date, "%Y-%m-%d")'
       @html_report = nil
+      check_for_r
     end
 
     def input script_name
@@ -132,5 +133,18 @@ EOH
       end
     end
 
+    def check_for_r
+      if `which r 2>/dev/null`.empty?
+        print '<h2>R not found</h2>'
+        print <<EOHTML
+<p>Please install R (http://www.r-project.org) and make sure that it is available to TextMate
+by setting the PATH variable in TextMate &gt; Preferences &gt; Variables. R can be installed
+with Homebrew (http://mxcl.github.com/homebrew/) or MacPorts (http://www.macports.org).
+After installing R, install the ggplot2 package (http://ggplot2.org).
+</p>
+EOHTML
+
+      end
+    end
   end # class Statistics
 end # module Ledger
