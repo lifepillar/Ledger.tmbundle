@@ -1,6 +1,6 @@
-p <- ggplot(ledger_data, aes(partial_account, balance)) +
+p <- suppressMessages(ggplot(ledger_data, aes(partial_account, balance)) +
             geom_bar(stat="identity") +
             scale_y_continuous(name = commodity) +
-            theme(axis.title.x = element_blank()) # No title on the x-axis
+            xlab("") + ylab(commodity))
 
-suppressMessages(ggsave(file = "bar-balance-vs-account.svg", plot = p, width = 8, height = 4))
+suppressMessages(ggsave(file = "bar-balance-vs-account.svg", plot = p, width = 14, height = 4))
