@@ -43,6 +43,7 @@ print report.run(:html =&gt; true, :wrapper =&gt; 'table', :class =&gt; 'balance
 if report.chart
   balance = Ledger::BalanceStatistics.new(report)
   balance.input('bar-balance-vs-account')
+  balance.input('dotplot-balance-vs-account')
   print balance.html_report
 end
 print page.end_html
