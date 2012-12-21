@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>saveActiveFile</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/formats.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/statistics.rb"
+
+SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
+
+TextMate.save_current_document
+
+report = Ledger::Report.new('balance', {
+  # Customize the following arguments as needed
+  :accounts =&gt; ['^'+EXPENSES],
+  :ignored_accounts =&gt; [],
+  :since =&gt; 'this month',
+  :until =&gt; '',
+  :currency =&gt; 'All',
+  :collapse =&gt; false,
+  :virtual =&gt; false,
+  :format =&gt; TABLE_BALANCE_FORMAT,
+  :pivot =&gt; '',
+  :other =&gt; ['--subtotal'] # array of extra options
+})
+
+unless SKIP_DIALOG
+  ok = report.dialog
+  TextMate.exit_discard if not ok
+end
+
+#report.pretty_print('Expense Report', :wrapper =&gt; 'table', :class =&gt; 'balance-report')
+
+page = Ledger::Html5::Page.new('Expense Report', :css =&gt; THEME)
+print page.start_html
+print report.run(:html =&gt; true, :wrapper =&gt; 'table', :class =&gt; 'balance-report')
+if report.chart
+  report.type = 'register'
+  report.other = ['--quantity']
+  expenses = Ledger::Statistics.new(report)
+  expenses.input('scatter-amount-vs-date-by-account-facet-payee')
+  report.other &lt;&lt; '--weekly'
+  expenses.input('arrow-amount-vs-date-facet-year')
+  print expenses.html_report
+end
+print page.end_html
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>^@l</string>
+	<key>name</key>
+	<string>Expense Report</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>F55386A1-F869-4C81-A070-790EABCE0A90</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

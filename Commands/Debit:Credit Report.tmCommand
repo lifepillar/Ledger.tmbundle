@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/formats.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+
+SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
+
+TextMate.save_current_document
+
+report = Ledger::Report.new('register', {
+  # Customize the following arguments as needed
+  :accounts =&gt; [LIABILITIES+':'+CREDIT_CARD],
+  :ignored_accounts =&gt; [],
+  :since =&gt; '',
+  :until =&gt; '',
+  :display_since =&gt; '2 months ago',
+  :display_until =&gt; 'today',
+  :currency =&gt; 'All',
+  :collapse =&gt; false,
+  :virtual =&gt; false,
+  :pivot =&gt; '',
+  :format =&gt; TABLE_DEBIT_CREDIT_FORMAT,
+  :other =&gt; ['--dc', '--sort', 'date'] # array of extra options
+})
+
+unless SKIP_DIALOG
+  ok = report.dialog
+  TextMate.exit_discard if not ok
+end
+
+report.pretty_print('Debit/Credit Report', :wrapper =&gt; 'table',
+  :header =&gt; ['', 'Date', 'Payee', 'Account', 'Debit', 'Credit', 'Balance'])
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>^@l</string>
+	<key>name</key>
+	<string>Debit/Credit Report</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>824ADDE2-083C-449E-81D4-C7FD8011C2E6</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

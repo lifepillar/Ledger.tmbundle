@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/formats.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+
+SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
+
+TextMate.save_current_document
+
+report = Ledger::Report.new('cleared', {
+  # Customize the following arguments as needed
+  :accounts =&gt; [ASSETS, LIABILITIES],
+  :ignored_accounts =&gt; [],
+  :since =&gt; '',
+  :until =&gt; '',
+  :currency =&gt; 'All',
+  :collapse =&gt; false,
+  :virtual =&gt; false,
+  :pivot =&gt; '',
+  :format =&gt; TABLE_CLEARED_FORMAT,
+  :other =&gt; [] # array of extra options
+})
+
+unless SKIP_DIALOG
+  ok = report.dialog
+  TextMate.exit_discard if not ok
+end
+
+report.pretty_print('Cleared Report', :wrapper =&gt; 'table', :class =&gt; 'balance-report')
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>^@l</string>
+	<key>name</key>
+	<string>Cleared Report</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>8E67F9D5-2736-410D-808A-A0B73612909E</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

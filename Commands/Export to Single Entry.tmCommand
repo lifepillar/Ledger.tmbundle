@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby -wKU
+# -*- coding: utf-8 -*-
+#
+# This script converts Ledger's output into a "single-entry form"
+# suitable for importing into "traditional" accounting programs.
+# For example, for a transaction like
+#
+# 2012/11/15 * MoneySucker
+#    Expenses:Foo  40 bitcoins
+#    Expenses:Baz  60 bitcoins
+#    Liabilities:Credit Card
+#
+# the script may output something like this:
+#
+# "Date","Payee","Account","Category","Amount","Currency"
+# "2012/11/15","MoneySucker","Liabilities:Credit Card","Expenses:Foo","40","bitcoins"
+# "2012/11/15","MoneySucker","Liabilities:Credit Card","Expenses:Baz","60","bitcoins"
+#
+# In order to do this, the script must grant a special status to some accounts
+# (Liabilities:Credit Card in the example above). We call such special accounts
+# “real accounts”. They are defined by the regular expression
+# in $real_accounts below. All the other Ledger accounts are
+# demoted to “categories”.
+#
+# NOTES
+#
+# (Balanced and unbalanced) virtual transactions are ignored.
+require 'csv'
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/transaction.rb"
+
+SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
+
+$real_accounts = [ASSETS+':'+CASH, ASSETS+':'+CHECKING, ASSETS+':'+SAVINGS, LIABILITIES+':'+CREDIT_CARD].join(',')
+$start_date = ''
+$end_date = ''
+$date_format = '%d %b %Y'
+$effective_date = true # Use effective dates?
+$market_value = false # Convert to market value?
+$account_separator = ':'
+$category_separator = ' &gt; '
+$csv_separator = '\t'
+$keep_top_level_accounts = false
+$swap_sign = true # Set to true to assign a + sign to income and a - sign to expenses
+$csv_header = true
+$split_files = true # If set to true, output a separate file for each real account
+
+TextMate.save_current_document
+
+unless SKIP_DIALOG
+  params = {
+    'realAccount'  =&gt; $real_accounts,
+    'displaySince' =&gt; $start_date,
+    'displayUntil' =&gt; $end_date,
+    'dateFormat'   =&gt; $date_format,
+    'effDate'      =&gt; $effective_date,
+    'market'       =&gt; $market_value,
+    'accSep'       =&gt; $account_separator,
+    'catSep'       =&gt; $category_separator,
+    'fieldSep'     =&gt; $csv_separator,
+    'keepTop'      =&gt; $keep_top_level_accounts,
+    'swapSign'     =&gt; $swap_sign,
+    'header'       =&gt; $csv_header,
+    'split'        =&gt; $split_files
+  }
+  nib = ENV['TM_BUNDLE_SUPPORT']+"/nib/SingleEntryDialog"
+  return_value = %x{#{TM_DIALOG} -cmp #{e_sh params.to_plist} '#{nib}'}
+  return_hash = OSX::PropertyList::load(return_value)
+  result = return_hash['result']
+  TextMate.exit_discard if result.nil?
+  TextMate.exit_discard if result['returnArgument'].nil? or result['returnArgument'].empty?
+  $real_accounts = result['returnArgument']
+  $start_date = result['displaySince'] || ''
+  $end_date = result['displayUntil'] || ''
+  $date_format = result['dateFormat'] || ''
+  $effective_date = result['effDate']
+  $market_value = result['market']
+  $account_separator = result['accSep'] || ''
+  $category_separator = result['catSep'] || ''
+  $csv_separator = result['fieldSep'] || ','
+  $csv_separator = "\t" if '\t' == $csv_separator
+  $keep_top_level_accounts = result['keepTop']
+  $swap_sign = result['swapSign']
+  $csv_header = result['header']
+  $split_files = result['split']
+end
+
+format_spec = ''
+# First line (transaction heading and first posting)
+format_spec &lt;&lt; "%(format_date(date,\"#{$date_format}\"))"
+format_spec &lt;&lt; '\t%(cleared ? "*" : (pending ? "!" : ""))'
+format_spec &lt;&lt; '\t%(code)'
+format_spec &lt;&lt; '\t%(payee)\n'
+format_spec &lt;&lt; '\t%(display_account)'
+if $market_value
+  format_spec &lt;&lt; '\t%(quantity(market(price)))'
+  format_spec &lt;&lt; '\t%(commodity(market(price)))'
+else
+  format_spec &lt;&lt; '\t%(quantity(price))'
+  format_spec &lt;&lt; '\t%(commodity(price))'
+end
+format_spec &lt;&lt; '\t%(display_amount)'
+format_spec &lt;&lt; '\t%(join(note | xact.note))\n%/'
+# Other lines (remaining postings)
+format_spec &lt;&lt; '\t%(display_account)'
+if $market_value
+  format_spec &lt;&lt; '\t%(quantity(market(price)))'
+  format_spec &lt;&lt; '\t%(commodity(market(price)))'
+else
+  format_spec &lt;&lt; '\t%(quantity(price))'
+  format_spec &lt;&lt; '\t%(commodity(price))'
+end
+format_spec &lt;&lt; '\t%(display_amount)'
+format_spec &lt;&lt; '\t%(join(note | xact.note))\n'
+
+report = Ledger::Report.new('register', {
+  # Customize the following arguments as needed
+  :accounts =&gt; [],
+  :ignored_accounts =&gt; [],
+  :payee =&gt; '',
+  :since =&gt; '',
+  :until =&gt; '',
+  :display_since =&gt; $start_date,
+  :display_until =&gt; $end_date,
+  :effective_dates =&gt; $effective_date,
+  :currency =&gt; '',
+  :collapse =&gt; false,
+  :virtual =&gt; false,
+  :pivot =&gt; '',
+  :format =&gt; format_spec,
+  :other =&gt; ['--sort', 'date']
+})
+
+dir = File.dirname(ENV['TM_FILEPATH'])
+name = File.basename(ENV['TM_FILEPATH'],'.ledger')
+# The following requires TextMate 2.0.0-alpha.9321 or later
+xml = %x|"$DIALOG" filepanel --isSavePanel --title 'Choose Destination' --label 'Export As:' --filename '#{name}.csv' --defaultDirectory '#{dir}'|
+outpath = OSX::PropertyList::load(xml)['path']
+TextMate.exit_discard if outpath.nil?
+
+# Set up defaults
+SingleEntry.keep_top_level_accounts = $keep_top_level_accounts
+SingleEntry.display_account_separator = $account_separator
+SingleEntry.display_category_separator = $category_separator
+Transaction.real_accounts_regexp = /#{$real_accounts.gsub(/,/, '|')}/i
+Transaction.swap_sign = $swap_sign
+
+puts "&lt;h2&gt;Exporting #{File.basename(ENV['TM_FILEPATH'])}…&lt;/h2&gt;"
+
+data = report.run
+csvout = []
+csvout &lt;&lt; ['Date','Status','Code','Payee','Account','Category','Amount','Commodity','Description'] if $csv_header
+unbalanced = [] # Remaining, unbalanced, postings
+t = Transaction.new
+data.each_line do |l|
+  fields = l.split(/\t/)
+  if fields[0].empty?
+    p = Posting.new(fields[1], fields[2], fields[3], fields[5].strip)
+    next if p.virtual? # skip virtual transactions
+    t.add(p)
+  else
+    csvout += t.to_single_entry
+    unbalanced &lt;&lt; t unless t.empty?
+    t = Transaction.new(
+      :date   =&gt; fields[0],
+      :status =&gt; fields[1],
+      :code   =&gt; fields[2],
+      :payee  =&gt; fields[3].chomp!
+    )
+  end
+end
+csvout += t.to_single_entry
+unbalanced &lt;&lt; t unless t.empty?
+
+CSV.open(outpath, 'w', $csv_separator) do |csv|
+  csvout.each { |r| csv &lt;&lt; r }
+end
+if $split_files
+  prefix = File.basename(outpath,'.csv') + '-'
+  ledgers = Hash.new
+  CSV.open(outpath, 'r', $csv_separator) do |row|
+    if ledgers.has_key?(row[4])
+      ledgers[row[4]] &lt;&lt; row
+    else
+      ledgers[row[4]] = [row]
+    end
+  end
+  ledgers.each do |ledger,records|
+    Dir.chdir(File.dirname(outpath)) do
+      CSV.open(prefix+ledger.gsub(/[\:\s]/,'_')+'.csv','w', $csv_separator) do |writer|
+        records.each do |row|
+          writer &lt;&lt; row
+        end
+      end
+    end
+  end
+end
+puts "&lt;h2&gt;Done!&lt;/h2&gt;"
+unless unbalanced.empty?
+  puts "&lt;h3&gt;Unbalanced postings (not exported):&lt;/h3&gt;"
+  puts '&lt;ul&gt;'
+  unbalanced.each { |t| puts '&lt;li&gt;&lt;kbd&gt;' + htmlize(t.to_s) + '&lt;/kbd&gt;&lt;/li&gt;'}
+  puts '&lt;/ul&gt;'
+end
+puts "&lt;span&gt;#{report.command}&lt;/span&gt;"
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>name</key>
+	<string>Export to CSV (Single Entry)</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>C56172DE-AA2D-4D2B-BFC6-DFCD377D34E3</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

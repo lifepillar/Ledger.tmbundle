@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/formats.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+
+SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
+
+TextMate.save_current_document
+
+report = Ledger::Report.new('balance', {
+  # Customize the following arguments as needed
+  :accounts =&gt; [CASH],
+  :ignored_accounts =&gt; [],
+  :since =&gt; '',
+  :until =&gt; '',
+  :currency =&gt; 'All',
+  :collapse =&gt; false,
+  :virtual =&gt; false,
+  :pivot =&gt; '',
+  :format =&gt; TABLE_BALANCE_FORMAT,
+  :other =&gt; ['--related'] # array of extra options
+})
+
+unless SKIP_DIALOG
+  ok = report.dialog
+  TextMate.exit_discard if not ok
+end
+
+html = Ledger::Html5::Page.new("Cash Flow for #{report.accounts.join(', ')}", :css =&gt; THEME)
+html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', :class =&gt; 'balance-report')
+html &lt;&lt; '&lt;h2&gt;Details&lt;/h2&gt;'
+report.type = 'register'
+report.format = TABLE_DEBIT_CREDIT_FORMAT
+report.collapse = false
+report.other &lt;&lt; '--dc' &lt;&lt; '--sort' &lt;&lt; 'date'
+html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table',
+  :header =&gt; ['', 'Date', 'Payee', 'Account', 'Debit', 'Credit', 'Balance'])
+print html.to_s
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>^@l</string>
+	<key>name</key>
+	<string>Cash Flow</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>D563BC16-328E-41DB-A045-CBC1BF4FF733</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

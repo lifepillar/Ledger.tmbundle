@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>contactEmailRot13</key>
+	<string>yvsrcvyyne@yvsrcvyyne.pbz</string>
+	<key>contactName</key>
+	<string>Lifepillar</string>
+	<key>description</key>
+	<string>&lt;a href="http://www.ledger-cli.org"&gt;Ledger&lt;/a&gt; is a powerful double-entry accounting system that is accessed from the UNIX command-line. It has all the flexibility and muscle of its modern day cousins, without any of the fat. Think of it as the Bran Muffin of accounting tools. This bundle provides syntax highlighting for Ledger files, snippets to quickly add transactions and postings, and commands to print many useful reports.</string>
+	<key>isDisabled</key>
+	<false/>
+	<key>name</key>
+	<string>Ledger</string>
+	<key>ordering</key>
+	<array>
+		<string>AD9321FB-CE33-426D-9F63-1DE432AD3AF3</string>
+		<string>59EB1611-94A4-45C4-AB84-11219472ABF7</string>
+		<string>0C810596-CAD0-417F-BE92-284C47AAD6CC</string>
+		<string>66ECAE19-1421-45CE-AA25-5019FECDB1C9</string>
+		<string>A59E4C3D-C62A-471F-BFB3-2FBF03C94A54</string>
+	</array>
+	<key>uuid</key>
+	<string>C5CE8D45-3BF8-44C4-B7FD-C06AD992BF3D</string>
+</dict>
+</plist>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>saveActiveFile</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/formats.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/budget_statistics.rb"
+
+SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
+
+TextMate.save_current_document
+
+report = Ledger::Report.new('budget', {
+  # Customize the following arguments as needed
+  :accounts =&gt; [EXPENSES, ACCOUNTS_PAYABLE],
+  :ignored_accounts =&gt; [],
+  :since =&gt; 'this year',
+  :until =&gt; '',
+  :currency =&gt; 'All',
+  :collapse =&gt; false,
+  :virtual =&gt; false,
+  :pivot =&gt; '',
+  :format =&gt; TABLE_BUDGET_FORMAT,
+  :other =&gt; [] # array of extra options
+})
+
+unless SKIP_DIALOG
+  ok = report.dialog
+  TextMate.exit_discard if not ok
+end
+
+#report.pretty_print('Budget Report', :wrapper =&gt; 'table', :class =&gt; 'budget-report',
+#  :header =&gt; ['Actual', 'Budgeted', 'Remaining', 'Used', 'Account'])
+
+page = Ledger::Html5::Page.new('Budget Report', :css =&gt; THEME)
+print page.start_html
+print report.run(:html =&gt; true, :wrapper =&gt; 'table', :class =&gt; 'budget-report',
+  :header =&gt; ['Actual', 'Budgeted', 'Remaining', 'Used', 'Account'])
+if report.chart
+  budget = Ledger::BudgetStatistics.new(report)
+  budget.input('bar-budget')
+  print budget.html_report
+end
+print page.end_html
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>^@l</string>
+	<key>name</key>
+	<string>Budget</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>A1ED791F-1CE4-4A98-BFB2-0AA011DC2467</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

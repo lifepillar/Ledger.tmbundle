@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/formats.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+
+SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
+
+TextMate.save_current_document
+
+# Change the following two constants as needed
+$income   = [INCOME]   # List of income accounts
+$expenses = [EXPENSES] # List of expenses accounts
+
+report = Ledger::Report.new('balance', {
+  :accounts =&gt; $income+$expenses,
+  # Customize the following arguments as needed
+  :ignored_accounts =&gt; [],
+  :since =&gt; `date "+%Y/%m/01"`.chomp!,
+  :until =&gt; 'today',
+  #:currency =&gt; '$', Currency is mandatory if multiple commodities are in use
+  :collapse =&gt; true,
+  :virtual =&gt; false,
+  :pivot =&gt; '',
+  :format =&gt; TABLE_BALANCE_FORMAT,
+  :other =&gt; [] # array of extra options
+})
+
+unless SKIP_DIALOG
+  ok = report.dialog
+  TextMate.exit_discard if not ok
+end
+
+html = Ledger::Html5::Page.new('Total income and expenses', :css =&gt; THEME)
+html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', :class =&gt; 'balance-report')
+report.collapse = true
+report.format = '%(quantity(scrub(display_total)))'
+args = report.arguments
+tot_in = %x|#{report.ledger} balance #{(args - $expenses).shelljoin}|
+tot_out = %x|#{report.ledger} balance #{(args - $income).shelljoin}}|
+tot = 100*(tot_in.to_f+tot_out.to_f)/tot_in.to_f
+html &lt;&lt; '&lt;section class="savings-rate"&gt;'
+if tot.nan? or (not tot.infinite?.nil?)
+  html &lt;&lt; '&lt;p class="message"&gt;Savings rate cannot be determined.&lt;/p&gt;&lt;/section&gt;'
+else
+  cl = (tot &lt; 0) ? 'perc neg"&gt;' : 'perc"&gt;+'
+  html &lt;&lt; '&lt;p&gt;Savings rate: &lt;span class="' + cl + ("%.2f" % tot) + '%&lt;/span&gt;&lt;/p&gt;&lt;/section&gt;'
+end
+print html.to_s
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>keyEquivalent</key>
+	<string>^@l</string>
+	<key>name</key>
+	<string>Savings Rate</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>465C9743-C006-4E5E-808B-4B10978578CF</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>

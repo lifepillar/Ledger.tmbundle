@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/usr/bin/env ruby
+require ENV["TM_SUPPORT_PATH"] + "/lib/tm/save_current_document"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/formats.rb"
+require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/report.rb"
+
+SKIP_DIALOG = true # Change to true to skip the dialog and use the defaults below
+
+TextMate.save_current_document
+
+report = Ledger::Report.new('register', {
+  # Customize the following arguments as needed
+  :accounts =&gt; [],
+  :ignored_accounts =&gt; [],
+  :since =&gt; '',
+  :until =&gt; '',
+  :currency =&gt; 'All',
+  :collapse =&gt; false,
+  :virtual =&gt; false,
+  :pivot =&gt; '',
+  :format =&gt; TABLE_REGISTER_FORMAT,
+  :other =&gt; ['--pending'] # array of extra options
+})
+
+unless SKIP_DIALOG
+  ok = report.dialog
+  TextMate.exit_discard if not ok
+end
+
+html = Ledger::Html5::Page.new('Pending and uncleared transactions', :css =&gt; THEME)
+html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', :title =&gt; 'Pending transactions',
+  :header =&gt; ['','Date','Payee','Account','Amount','Balance'], :id =&gt; 'register-pending')
+report.other = ['--uncleared']
+html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', :title =&gt; 'Uncleared transactions',
+  :header =&gt; ['','Date','Payee','Account','Amount','Balance'], :id =&gt; 'register-pending')
+print html.to_s
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>inputFormat</key>
+	<string>text</string>
+	<key>name</key>
+	<string>Show Pending/Uncleared</string>
+	<key>outputCaret</key>
+	<string>afterOutput</string>
+	<key>outputFormat</key>
+	<string>html</string>
+	<key>outputLocation</key>
+	<string>newWindow</string>
+	<key>scope</key>
+	<string>source.ledger</string>
+	<key>uuid</key>
+	<string>92AD90FC-029B-4DFD-B33E-EBB904774325</string>
+	<key>version</key>
+	<integer>2</integer>
+</dict>
+</plist>
