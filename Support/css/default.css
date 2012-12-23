@@ -125,7 +125,7 @@ tr:hover td {
   width: 25%;
   min-width: 130px;
 }
-.balance-report .date {
+.date {
   min-width: 100px;
 }
 .balance-report td.total,
