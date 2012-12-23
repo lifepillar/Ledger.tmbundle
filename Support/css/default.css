@@ -72,6 +72,9 @@ th {
 #monthly-expenses th, #monthly-expenses-related th {
   border-bottom: none;
 }
+#cash-flow-balance th {
+  border-bottom: none;
+}
 thead {
   display: table-header-group;
   height: 43px;

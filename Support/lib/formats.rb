@@ -100,6 +100,14 @@ TABLE_DEBIT_CREDIT_FORMAT = '<tr><td><input name="status" value="" type="checkbo
   '<td class="account">%$6</td><td class="amount">%$7</td><td class="amount">%$8</td><td class="amount total">%$9</td></tr>\n'
 
 
+TABLE_BALANCE_DEBIT_CREDIT_FORMAT = '<tr><td class="amount">%(scrub(abs(get_at(display_total, 0))))</td>' +
+  '<td class="amount">%(scrub(abs(get_at(display_total, 1))))</td>' +
+  '<td class="amount partial">%(scrub(get_at(display_total, 0) + get_at(display_total, 1)))</td>' +
+  '<td class="account">%(!options.flat ? depth_spacer : "")%(partial_account(options.flat))</td></tr>%/' +
+  '</tr>\n%/' +
+  '<tr><td class="amount total">%$2</td><td class="amount total">%$3</td><td class="amount total">%$4</td><td></td></tr>\n'
+
+
 REGISTER_FORMAT = '%(date > today ? "<span class=\"future date\">" : "<span class=\"date\">")' +
   '%(justify(format_date(date), int(date_width)))</span>' +
   ' %(!cleared and actual ? "<span class=\"pending payee\">" : "<span class=\"payee\">")' +
