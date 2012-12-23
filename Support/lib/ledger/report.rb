@@ -24,6 +24,7 @@ module Ledger
     attr_accessor :virtual
     attr_accessor :pivot
     attr_accessor :format
+    attr_accessor :status # Any, Cleared, Uncleared, Pending
     attr_accessor :other
     attr_accessor :chart
 
@@ -45,6 +46,7 @@ module Ledger
       @virtual = opts.has_key?(:virtual) ? opts[:virtual] : false
       @pivot = opts[:pivot] || ''
       @format = opts[:format] || ''
+      @status = opts[:status] || 'Any'
       @other = Array.new(opts[:other]) || []
       @warnings = []
       @chart = opts.has_key?(:chart) ? opts[:chart] : false
@@ -88,6 +90,7 @@ module Ledger
       comm = %x|#{self.ledger} commodities #{['--file', ENV['TM_FILEPATH']].shelljoin}|.split(/\n/)
       comm << 'All' if 'All' == self.currency
       self.currency = comm.first if self.currency.nil? or self.currency.empty?
+      statuses = ['Any','Cleared','Uncleared','Pending']
       params = {
         'account' => self.accounts.join(','),
         'ignored' => self.ignored_accounts.join(','),
@@ -102,7 +105,10 @@ module Ledger
         'collapse' => self.collapse,
         'virtual' => self.virtual,
         'pivot' => self.pivot,
-        'chart' => self.chart
+        'chart' => self.chart,
+        'statuses' => statuses,
+        'status' => self.status,
+        'other' => ''
       }
       nib = ENV['TM_BUNDLE_SUPPORT']+"/nib/#{nib_name}"
       return_value = %x{#{TM_DIALOG} -cmp #{e_sh params.to_plist} '#{nib}'}
@@ -124,6 +130,8 @@ module Ledger
       self.virtual = result['virtual']
       self.pivot = result['pivot'] || ''
       self.chart = result['chart']
+      self.status = result['status']
+      self.other += result['other'].shellsplit if result['other']
       return true
     end
 
@@ -228,6 +236,14 @@ module Ledger
       args << '--pivot' << self.pivot unless self.pivot.empty?
       args << '-F' << self.format unless self.format.empty?
       args += self.other unless self.other.empty?
+      case self.status
+      when 'Cleared'
+        args << '--cleared'
+      when 'Uncleared'
+        args << '--uncleared'
+      when 'Pending'
+        args << '--pending'
+      end
       return args
     end
 
@@ -247,7 +263,8 @@ module Ledger
         :pivot => self.pivot,
         :format => self.format,
         :other => self.other,
-        :chart => self.chart
+        :chart => self.chart,
+        :status => self.status
       }
     end
 
