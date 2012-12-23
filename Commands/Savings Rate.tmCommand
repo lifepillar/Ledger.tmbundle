@@ -23,8 +23,8 @@ report = Ledger::Report.new('balance', {
   :accounts =&gt; $income+$expenses,
   # Customize the following arguments as needed
   :ignored_accounts =&gt; [],
-  :since =&gt; `date "+%Y/%m/01"`.chomp!,
-  :until =&gt; 'today',
+  :since =&gt; 'this month',
+  :until =&gt; '',
   #:currency =&gt; '$', Currency is mandatory if multiple commodities are in use
   :collapse =&gt; true,
   :virtual =&gt; false,

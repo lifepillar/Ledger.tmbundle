@@ -18,7 +18,7 @@ TextMate.save_current_document
 report = Ledger::Report.new('register', {
   # Customize the following arguments as needed
   :accounts =&gt; ['^'+EXPENSES],
-  :ignored_accounts =&gt; [TAXES],
+  :ignored_accounts =&gt; [],
   :since =&gt; 'this month',
   :until =&gt; '',
   :currency =&gt; 'All',
