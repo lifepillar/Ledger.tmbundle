@@ -42,7 +42,6 @@ html &lt;&lt; '&lt;h2&gt;Details&lt;/h2&gt;'
 report.type = 'register'
 report.format = TABLE_DEBIT_CREDIT_FORMAT
 report.collapse = false # See http://bugs.ledger-cli.org/show_bug.cgi?id=870
-report.other &lt;&lt; '--sort' &lt;&lt; 'date'
 html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table',
   :header =&gt; ['', 'Date', 'Payee', 'Account', 'Debit', 'Credit', 'Balance'])
 print html.to_s
