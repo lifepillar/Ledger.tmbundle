@@ -42,6 +42,7 @@ section#weekly-net-worth {
 }
 td {
   display: table-cell;
+  vertical-align: top;
 	padding: 5px 8px;
 	color: rgb(102,102,153);
 }
