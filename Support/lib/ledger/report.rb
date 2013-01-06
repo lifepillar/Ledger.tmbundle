@@ -210,7 +210,11 @@ module Ledger
     # Returns the arguments for the ledger executable as an array.
     def arguments
       args = ["--file=#{ENV['TM_FILEPATH']}"]
-      args += self.accounts unless self.accounts.empty?
+      unless self.accounts.empty?
+        args << '('
+        args += self.accounts
+        args << ')'
+      end
       unless self.ignored_accounts.empty?
         args << 'and' unless self.accounts.empty?
         args << 'not' << '('
