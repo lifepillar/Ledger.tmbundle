@@ -44,10 +44,10 @@ print report.run(:html =&gt; true, :wrapper =&gt; 'table', :title =&gt; 'Monthly
 if report.chart
   report.other = ['--daily', '--empty', '--quantity']
   net_worth = Ledger::Statistics.new(report)
-  net_worth.input('line-amount-vs-date-facet-year')
-  net_worth.input('line-total-vs-date-facet-year')
+  net_worth.input('line-amount-vs-date')
+  net_worth.input('line-total-vs-date')
   net_worth.input('tile-total-vs-week-wday-facet-year')
-  net_worth.input('histogram-total-facet-year')
+  net_worth.input('histogram-total')
   print net_worth.html_report 
 end
 print page.end_html
