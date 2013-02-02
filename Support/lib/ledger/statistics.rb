@@ -19,7 +19,8 @@ module Ledger
       # date; year; month; month_num; wday; wday_num; week; mday; amount; total; payee; account
       @data_format = '%(format_date(date,\"%Y-%m-%d;%Y;%b;%m;%a;%u;%W;%d\"));%(quantity(scrub(display_amount)));%(quantity(scrub(display_total)));%(payee);%(display_account)\n'
       @data_header = 'names(ledger_data) <- c("date","year","month","month_num","wday","wday_num","week","mday","amount","total","payee","account")' + "\n" +
-        'ledger_data$date <- as.Date(ledger_data$date, "%Y-%m-%d")'
+        'ledger_data$date <- as.Date(ledger_data$date, "%Y-%m-%d")' + "\n" +
+        'ledger_data$month <- factor(ledger_data$month, levels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"), ordered=TRUE)'
       @html_report = nil
       check_for_r
     end
