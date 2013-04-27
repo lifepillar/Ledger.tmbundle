@@ -34,7 +34,8 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
-report.pretty_print('Cleared Report', :wrapper =&gt; 'table', :class =&gt; 'balance-report')
+report.pretty_print('Cleared Report', :wrapper =&gt; 'table', :class =&gt; 'balance-report',
+  :header =&gt; ['Pending', 'Cleared'])
 </string>
 	<key>input</key>
 	<string>document</string>

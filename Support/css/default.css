@@ -143,7 +143,8 @@ tr:hover td {
 .header-debit, .header-credit,
 .header-net-worth, .header-total,
 .header-actual, .header-budgeted,
-.header-remaining, .header-used {
+.header-remaining, .header-used,
+.header-cleared, .header-pending {
   text-align: right;
 }
 .improper {
