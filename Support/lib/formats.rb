@@ -12,24 +12,25 @@ TABLE_BALANCE_FORMAT = '<tr><td class="amount">%(scrub(display_total))</td>' +
     '<tr class="total"><td class="amount total">%$2</td><td></td></tr>%/'
 
 BUDGET_FORMAT = '<span class="amount">%(justify(scrub(get_at(display_total, 0)), 20, -1, true, false))</span>' +
-  ' <span class="amount">%(justify(-scrub(get_at(display_total, 1)), 20, ' +
+  ' <span class="amount">%(justify(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : 0.0, 20, ' +
   '           20 + 1 + 20, true, false))</span>' +
-  ' <span class="amount">%(justify(scrub(get_at(display_total, 1) + ' +
-  '                 get_at(display_total, 0)), 20, ' +
+  ' <span class="amount">%(justify(get_at(display_total, 1) ? (get_at(display_total, 0) ?' +
+  '           -(scrub(get_at(display_total, 1) + get_at(display_total, 0))) :' +
+  '           -(scrub(get_at(display_total, 1)))) : -(scrub(get_at(display_total, 0))), 20, ' +
   '           20 + 1 + 20 + 1 + 20, true, false))</span>' +
   '%(get_at(display_total, 1) and (abs(quantity(scrub(get_at(display_total, 0))) / ' +
   '          quantity(scrub(get_at(display_total, 1)))) >= 1) ? ' +  
   ' " <span class=\"perc improper\">" : " <span class=\"perc\">")' +
   '%(justify((get_at(display_total, 1) ? ' +
-  '          (100% * scrub(get_at(display_total, 0))) / ' +
-  '             -scrub(get_at(display_total, 1)) : 0), ' +
+  '          (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 0)) : 0.0)) / ' +
+  '             -scrub(get_at(display_total, 1)) : "na"), ' +
   '           5, -1, true, false))</span>' +
   '  %(!options.flat ? depth_spacer : "")' +
   '<span class="account">%-(partial_account(options.flat))</span>\n' +
   '%/<span class="amount total">%$2</span> <span class="amount total">%$3</span>' +
   ' <span class="amount total">%$4</span> <span class="perc total">%$6</span>\n%/' +
   '%(prepend_width ? " " * int(prepend_width) : "")' +
-  '---------------- ---------------- ---------------- -----\n'
+  '    ----------------     ----------------     ---------------- -----\n'
 
 TABLE_BUDGET_FORMAT = '<tr><td class="amount">%(scrub(get_at(display_total, 0)))</td>' +
     '<td class="amount">%(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : "")</td>' +
