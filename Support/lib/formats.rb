@@ -32,13 +32,13 @@ BUDGET_FORMAT = '<span class="amount">%(justify(scrub(get_at(display_total, 0)),
   '---------------- ---------------- ---------------- -----\n'
 
 TABLE_BUDGET_FORMAT = '<tr><td class="amount">%(scrub(get_at(display_total, 0)))</td>' +
-    '<td class="amount">%(-scrub(get_at(display_total, 1)))</td>' +
-    '<td class="amount">%(-(scrub(get_at(display_total, 1) + get_at(display_total, 0))))</td>' +
+    '<td class="amount">%(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : "")</td>' +
+    '<td class="amount">%(get_at(display_total, 1) ? (get_at(display_total, 0) ? -(scrub(get_at(display_total, 1) + get_at(display_total, 0))) : -(scrub(get_at(display_total, 1)))) : -(scrub(get_at(display_total, 0))))</td>' +
     '%(get_at(display_total, 1) and (abs(quantity(scrub(get_at(display_total, 0))) / ' +
     'quantity(scrub(get_at(display_total, 1)))) >= 1) ? ' +  
     '"<td class=\"perc improper\">" : "<td class=\"perc\">")' +
     '%(get_at(display_total, 1) ? ' +
-    '          (100% * scrub(get_at(display_total, 0))) / ' +
+    '          (100% * (get_at(display_total, 0) ? scrub(get_at(display_total, 0)) : 0.0)) / ' +
     '             -scrub(get_at(display_total, 1)) : "na")</td>' +
     '<td class="account">%(!options.flat ? depth_spacer : "")%-(partial_account(options.flat))</td>' +
     '</tr>\n%/' +
