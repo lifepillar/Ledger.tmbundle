@@ -32,9 +32,9 @@ BUDGET_FORMAT = '<span class="amount">%(justify(scrub(get_at(display_total, 0)),
   '%(prepend_width ? " " * int(prepend_width) : "")' +
   '    ----------------     ----------------     ---------------- -----\n'
 
-TABLE_BUDGET_FORMAT = '<tr><td class="amount">%(scrub(get_at(display_total, 0)))</td>' +
-    '<td class="amount">%(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : "")</td>' +
-    '<td class="amount">%(get_at(display_total, 1) ? (get_at(display_total, 0) ? -(scrub(get_at(display_total, 1) + get_at(display_total, 0))) : -(scrub(get_at(display_total, 1)))) : -(scrub(get_at(display_total, 0))))</td>' +
+TABLE_BUDGET_FORMAT = '<tr><td class="amount">%(get_at(display_total, 0))</td>' +
+    '<td class="amount">%(get_at(display_total, 1) ? -scrub(get_at(display_total, 1)) : 0.0)</td>' +
+    '<td class="amount">%(get_at(display_total, 1) ? (get_at(display_total, 0) ? -(get_at(display_total, 1) + get_at(display_total, 0)) : -(scrub(get_at(display_total, 1)))) : -(scrub(get_at(display_total, 0))))</td>' +
     '%(get_at(display_total, 1) and (abs(quantity(scrub(get_at(display_total, 0))) / ' +
     'quantity(scrub(get_at(display_total, 1)))) >= 1) ? ' +  
     '"<td class=\"perc improper\">" : "<td class=\"perc\">")' +
