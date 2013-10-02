@@ -23,7 +23,7 @@ report = Ledger::Report.new('register', {
   :until =&gt; '',
   :display_since =&gt; '2 months ago',
   :display_until =&gt; 'today',
-  :currency =&gt; 'All',
+  :currency =&gt; 'None', # See http://bugs.ledger-cli.org/show_bug.cgi?id=870
   :collapse =&gt; false,
   :virtual =&gt; false,
   :pivot =&gt; '',
@@ -36,6 +36,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
+report.collapse = false # See http://bugs.ledger-cli.org/show_bug.cgi?id=870
 report.pretty_print('Debit/Credit Report', :wrapper =&gt; 'table',
   :header =&gt; ['', 'Date', 'Payee', 'Account', 'Debit', 'Credit', 'Balance'])
 </string>
