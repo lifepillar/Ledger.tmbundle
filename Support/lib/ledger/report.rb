@@ -89,8 +89,13 @@ module Ledger
     # Returns true if the user presses the OK button,
     # returns false if the user cancels or closes the window.
     def dialog nib_name = 'ReportDialog'
-      comm = %x|#{self.ledger} commodities #{['--file', ENV['TM_FILEPATH']].shelljoin}|.split(/\n/)
-      comm << 'All' if 'All' == self.currency
+      if self.currency =~ /none/i
+        comm = ['(Disabled)']
+        self.currency = '(Disabled)'
+      else
+        comm = %x|#{self.ledger} commodities #{['--file', ENV['TM_FILEPATH']].shelljoin}|.split(/\n/)
+        comm << 'All' if 'All' == self.currency
+      end
       self.currency = comm.first if self.currency.nil? or self.currency.empty?
       statuses = ['Any','Cleared','Uncleared','Pending']
       params = {
@@ -128,7 +133,7 @@ module Ledger
       self.display_until = return_hash['displayUntil'] || ''
       self.effective_dates = return_hash['effective']
       self.currency = return_hash['currency'] || ''
-      self.currency = '' if self.currency =~ /all|none|no value/i
+      self.currency = '' if self.currency =~ /all|none|no value|disabled/i
       self.collapse = return_hash['collapse']
       self.virtual = return_hash['virtual']
       self.pivot = return_hash['pivot'] || ''
