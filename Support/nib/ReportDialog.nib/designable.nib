@@ -406,7 +406,7 @@ Gw
                             <binding destination="3" name="value" keyPath="selection.chart" id="2447"/>
                         </connections>
                     </button>
-                    <button toolTip="Check that all accounts, payees, commodities and tags in use have been explicitly defined; output warnings otherwise." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QgL-dS-chh">
+                    <button toolTip="Check that all accounts, payees, commodities and tags in use have been explicitly declared; output warnings otherwise." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QgL-dS-chh">
                         <rect key="frame" x="18" y="18" width="102" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Strict checks" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Bym-pp-oPo">
