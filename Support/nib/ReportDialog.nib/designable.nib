@@ -406,6 +406,17 @@ Gw
                             <binding destination="3" name="value" keyPath="selection.chart" id="2447"/>
                         </connections>
                     </button>
+                    <button toolTip="Check that all accounts, payees, commodities and tags in use have been explicitly defined; output warnings otherwise." fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QgL-dS-chh">
+                        <rect key="frame" x="18" y="18" width="102" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Strict checks" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Bym-pp-oPo">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="3" name="value" keyPath="selection.strictCheck" id="9Fm-Gg-AFm"/>
+                        </connections>
+                    </button>
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2522">
                         <rect key="frame" x="111" y="55" width="105" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>

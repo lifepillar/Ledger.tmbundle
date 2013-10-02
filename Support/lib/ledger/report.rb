@@ -27,6 +27,7 @@ module Ledger
     attr_accessor :status # Any, Cleared, Uncleared, Pending
     attr_accessor :other
     attr_accessor :chart
+    attr_accessor :strict_check
 
     # type = balance, cleared, register, equity, …
     def initialize type, options = {}
@@ -48,6 +49,7 @@ module Ledger
       @format = opts[:format] || ''
       @status = opts[:status] || 'Any'
       @other = Array.new(opts[:other]) || []
+      @strict_check = opts.has_key?(:strict_check) ? opts[:strict_check] : false
       @warnings = []
       @chart = opts.has_key?(:chart) ? opts[:chart] : false
     end
@@ -108,6 +110,7 @@ module Ledger
         'chart' => self.chart,
         'statuses' => statuses,
         'status' => self.status,
+        'strictCheck' => self.strict_check,
         'other' => ''
       }
       nib = ENV['TM_BUNDLE_SUPPORT']+"/nib/#{nib_name}"
@@ -117,21 +120,22 @@ module Ledger
       return false if result.nil?
       self.accounts = result['returnArgument'] ? result['returnArgument'].split(',') : []
       self.accounts.each { |a| a.strip! }
-      self.ignored_accounts = result['ignored'] ? result['ignored'].split(',') : []
-      self.payee = result['payee'] || ''
-      self.since = result['since'] || ''
-      self.until = result['until'] || ''
-      self.display_since = result['displaySince'] || ''
-      self.display_until = result['displayUntil'] || ''
-      self.effective_dates = result['effective']
-      self.currency = result['currency'] || ''
+      self.ignored_accounts = return_hash['ignored'] ? return_hash['ignored'].split(',') : []
+      self.payee = return_hash['payee'] || ''
+      self.since = return_hash['since'] || ''
+      self.until = return_hash['until'] || ''
+      self.display_since = return_hash['displaySince'] || ''
+      self.display_until = return_hash['displayUntil'] || ''
+      self.effective_dates = return_hash['effective']
+      self.currency = return_hash['currency'] || ''
       self.currency = '' if self.currency =~ /all|none|no value/i
-      self.collapse = result['collapse']
-      self.virtual = result['virtual']
-      self.pivot = result['pivot'] || ''
-      self.chart = result['chart']
-      self.status = result['status']
-      self.other += result['other'].shellsplit if result['other']
+      self.collapse = return_hash['collapse']
+      self.virtual = return_hash['virtual']
+      self.pivot = return_hash['pivot'] || ''
+      self.chart = return_hash['chart']
+      self.status = return_hash['status']
+      self.strict_check = return_hash['strictCheck']
+      self.other += return_hash['other'].shellsplit if return_hash['other']
       return true
     end
 
@@ -210,7 +214,9 @@ module Ledger
     # Returns the arguments for the ledger executable as an array.
     def arguments
       args = ["--file=#{ENV['TM_FILEPATH']}"]
-      args << '--strict' << '--explicit' << '--check-payees' # Check accounts and payees
+      if self.strict_check
+        args << '--strict' << '--explicit' << '--check-payees' # Check accounts, payees, commodities and tags
+      end
       unless self.accounts.empty?
         args << '('
         args += self.accounts
@@ -269,7 +275,8 @@ module Ledger
         :format => self.format,
         :other => self.other,
         :chart => self.chart,
-        :status => self.status
+        :status => self.status,
+        :strict_check => self.strict_check
       }
     end
 
