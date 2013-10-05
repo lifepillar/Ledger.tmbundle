@@ -78,7 +78,7 @@ DEBIT_CREDIT_FORMAT = '%(date > today ? "<span class=\"future date\">" : "<span 
   '           4 + int(meta_width) + int(date_width) + int(payee_width)' +
   '             + int(account_width) + int(amount_width) + int(amount_width) + int(prepend_width),' +
   '           true, color))</span>' +
-  '   <span class="amount total">%(justify(scrub(get_at(display_total, 0) ? (get_at(display_total, 1) ? get_at(display_total, 0) + get_at(display_total, 1) : get_at(display_total, 0)) : 0.0), int(total_width), ' +
+  '   <span class="amount total">%(justify(scrub(get_at(display_total, 0) ? (get_at(display_total, 1) ? get_at(display_total, 0) + get_at(display_total, 1) : get_at(display_total, 0)) : get_at(display_total, 1)), int(total_width), ' +
   '           5 + int(meta_width) + int(date_width) + int(payee_width)' +
   '            + int(account_width) + int(amount_width) + int(amount_width) + int(total_width)' +
   '             + int(prepend_width), true, color))</span>' +
@@ -94,7 +94,7 @@ TABLE_DEBIT_CREDIT_FORMAT = '<tr><td><input name="status" value="" type="checkbo
   '<td class="account">%(display_account)</td>' +
   '<td class="amount">%(get_at(display_amount, 0) ? scrub(abs(get_at(display_amount, 0))) : 0.0)</td>' +
   '<td class="amount">%(get_at(display_amount, 1) ? scrub(abs(get_at(display_amount, 1))) : 0.0)</td>' +
-  '<td class="amount total">%(scrub(get_at(display_total, 0) ? (get_at(display_total, 1) ? get_at(display_total, 0) + get_at(display_total, 1) : get_at(display_total, 0)) : 0.0))</td>' +
+  '<td class="amount total">%(scrub(get_at(display_total, 0) ? (get_at(display_total, 1) ? get_at(display_total, 0) + get_at(display_total, 1) : get_at(display_total, 0)) : get_at(display_total, 1)))</td>' +
   '</tr>\n%/' +
   '<tr><td></td><td></td>' +
   '%(has_tag("Payee") ? "<td class=\"payee\">" + payee + "</td>" : "<td></td>")' +
@@ -103,7 +103,7 @@ TABLE_DEBIT_CREDIT_FORMAT = '<tr><td><input name="status" value="" type="checkbo
 
 TABLE_BALANCE_DEBIT_CREDIT_FORMAT = '<tr><td class="amount">%(get_at(display_total, 0) ? scrub(abs(get_at(display_total, 0))) : 0.0)</td>' +
   '<td class="amount">%(get_at(display_total, 1) ? scrub(abs(get_at(display_total, 1))) : 0.0)</td>' +
-  '<td class="amount partial">%(scrub(get_at(display_total, 0) ? (get_at(display_total, 1) ? get_at(display_total, 0) + get_at(display_total, 1) : get_at(display_total, 0)) : 0.0))</td>' +
+  '<td class="amount partial">%(scrub(get_at(display_total, 0) ? (get_at(display_total, 1) ? get_at(display_total, 0) + get_at(display_total, 1) : get_at(display_total, 0)) : get_at(display_total, 1)))</td>' +
   '<td class="account">%(!options.flat ? depth_spacer : "")%(partial_account(options.flat))</td></tr>%/' +
   '</tr>\n%/' +
   '<tr><td class="amount total">%$2</td><td class="amount total">%$3</td><td class="amount total">%$4</td><td></td></tr>\n'
