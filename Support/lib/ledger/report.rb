@@ -58,13 +58,9 @@ module Ledger
       @other << opt.strip
     end
 
-    # Returns the list of commodities used in this report.
-    #
-    # See the note in #accounts.
+    # Returns the list of the commodities used in this report.
     def commodities
-      a = self.arguments
-      a.delete_if { |e| e =~ /--(daily|weekly|biweekly|monthly|quarterly|yearly|collapse)/ }
-      %x|#{self.ledger} commodities #{a.shelljoin}|.split(/\n/).map { |c| c.sub(/ \{.*$/,'')} # Remove price, if any
+      %x|#{self.ledger} commodities #{['--file', ENV['TM_FILEPATH']].shelljoin}|.split(/\n/).map { |c| c.sub(/ \{.*$/,'')} # Remove price, if any
     end
 
     # Returns the list of the accounts used in this report.
@@ -93,7 +89,7 @@ module Ledger
         comm = ['(Disabled)']
         self.currency = '(Disabled)'
       else
-        comm = %x|#{self.ledger} commodities #{['--file', ENV['TM_FILEPATH']].shelljoin}|.split(/\n/)
+        comm = self.commodities
         comm << 'All' if 'All' == self.currency
       end
       self.currency = comm.first if self.currency.nil? or self.currency.empty?
