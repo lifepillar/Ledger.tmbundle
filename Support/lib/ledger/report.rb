@@ -64,7 +64,7 @@ module Ledger
     def commodities
       a = self.arguments
       a.delete_if { |e| e =~ /--(daily|weekly|biweekly|monthly|quarterly|yearly|collapse)/ }
-      %x|#{self.ledger} commodities #{a.shelljoin}|.split(/\n/)
+      %x|#{self.ledger} commodities #{a.shelljoin}|.split(/\n/).map { |c| c.sub(/ \{.*$/,'')} # Remove price, if any
     end
 
     # Returns the list of the accounts used in this report.
