@@ -82,19 +82,19 @@ unless SKIP_DIALOG
   TextMate.exit_discard if result['returnArgument'].nil? or result['returnArgument'].empty?
   $real_accounts = result['returnArgument']
   $ignored_accounts = return_hash['ignored'] ? return_hash['ignored'].split(',') : []
-  $start_date = result['displaySince'] || ''
-  $end_date = result['displayUntil'] || ''
-  $date_format = result['dateFormat'] || ''
-  $effective_date = result['effDate']
-  $market_value = result['market']
-  $account_separator = result['accSep'] || ''
-  $category_separator = result['catSep'] || ''
-  $csv_separator = result['fieldSep'] || ','
+  $start_date = return_hash['displaySince'] || ''
+  $end_date = return_hash['displayUntil'] || ''
+  $date_format = return_hash['dateFormat'] || ''
+  $effective_date = return_hash['effDate']
+  $market_value = return_hash['market']
+  $account_separator = return_hash['accSep'] || ''
+  $category_separator = return_hash['catSep'] || ''
+  $csv_separator = return_hash['fieldSep'] || ','
   $csv_separator = "\t" if '\t' == $csv_separator
-  $keep_top_level_accounts = result['keepTop']
-  $swap_sign = result['swapSign']
-  $csv_header = result['header']
-  $split_files = result['split']
+  $keep_top_level_accounts = return_hash['keepTop']
+  $swap_sign = return_hash['swapSign']
+  $csv_header = return_hash['header']
+  $split_files = return_hash['split']
 end
 
 format_spec = ''
