@@ -41,6 +41,7 @@ require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/transaction.rb"
 SKIP_DIALOG = false # Change to true to skip the dialog and use the defaults below
 
 $real_accounts = [ASSETS+':'+CASH, ASSETS+':'+CHECKING, ASSETS+':'+SAVINGS, LIABILITIES+':'+CREDIT_CARD].join(',')
+$ignored_accounts = ['Income:Currency']
 $start_date = ''
 $end_date = ''
 $date_format = '%d %b %Y'
@@ -59,6 +60,7 @@ TextMate.save_current_document
 unless SKIP_DIALOG
   params = {
     'realAccount'  =&gt; $real_accounts,
+    'ignored'      =&gt; $ignored_accounts.join(','),
     'displaySince' =&gt; $start_date,
     'displayUntil' =&gt; $end_date,
     'dateFormat'   =&gt; $date_format,
@@ -79,6 +81,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if result.nil?
   TextMate.exit_discard if result['returnArgument'].nil? or result['returnArgument'].empty?
   $real_accounts = result['returnArgument']
+  $ignored_accounts = return_hash['ignored'] ? return_hash['ignored'].split(',') : []
   $start_date = result['displaySince'] || ''
   $end_date = result['displayUntil'] || ''
   $date_format = result['dateFormat'] || ''
@@ -125,7 +128,7 @@ format_spec &lt;&lt; '\t%(join(note | xact.note))\n'
 report = Ledger::Report.new('register', {
   # Customize the following arguments as needed
   :accounts =&gt; [],
-  :ignored_accounts =&gt; [],
+  :ignored_accounts =&gt; $ignored_accounts,
   :payee =&gt; '',
   :since =&gt; '',
   :until =&gt; '',
@@ -204,6 +207,7 @@ if $split_files
     end
   end
 end
+
 puts "&lt;h2&gt;Done!&lt;/h2&gt;"
 unless unbalanced.empty?
   puts "&lt;h3&gt;Unbalanced postings (not exported):&lt;/h3&gt;"
