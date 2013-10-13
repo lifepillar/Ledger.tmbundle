@@ -215,6 +215,7 @@ unless unbalanced.empty?
   unbalanced.each { |t| puts '&lt;li&gt;&lt;kbd&gt;' + htmlize(t.to_s) + '&lt;/kbd&gt;&lt;/li&gt;'}
   puts '&lt;/ul&gt;'
 end
+puts '&lt;h3&gt;Executed command:&lt;/h3&gt;'
 puts "&lt;span&gt;#{report.command}&lt;/span&gt;"
 </string>
 	<key>input</key>
