@@ -55,6 +55,9 @@ td {
   border-top: 1px dotted rgb(182,190,216);
   border-collapse: collapse;
 }
+tr:first-child > td {
+  border: none;
+}
 td.amount {
   white-space: pre;
   text-align: right;
