@@ -40,7 +40,7 @@ end
 
 page = Ledger::Html5::Page.new('Monthly Average', :css =&gt; THEME)
 print page.start_html
-print report.run(:html =&gt; true, :wrapper =&gt; 'table', :title =&gt; 'Monthly Average',
+print report.run(:html =&gt; true, :wrapper =&gt; 'table',
   :header =&gt; ['Period','Account','Amount','Average'], :id =&gt; 'monthly-average')
 if report.chart
   report.other = ['--empty', '--quantity']
