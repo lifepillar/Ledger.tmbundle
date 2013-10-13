@@ -1,6 +1,6 @@
 /* Style copi… inspired by http://coding.smashingmagazine.com/2008/08/13/top-10-css-table-designs/ */
 ::selection {
-  background: rgb(0,51,153);
+  background: rgb(51,51,153);
   color: rgb(252,252,252);
 }
 body {
@@ -11,16 +11,16 @@ body {
   font-weight: normal;
   text-align: left;
   vertical-align: baseline;
-  color: rgb(0,51,153);
+  color: rgb(51,51,153);
   background-color: rgb(252,252,252);
 }
 figure {
   width: 100%;
-  /*float: left;*/
   margin: 0px;
   padding: 0px;
 }
-h1 {
+h1, h2, h3, h4, h5, h6 {
+  text-align: center;
 }
 pre {
   font-family: Menlo, Monaco, Courier, monospace;
@@ -34,34 +34,17 @@ table {
   -webkit-border-horizontal-spacing: 0px;
   -webkit-border-vertical-spacing: 0px;
 }
-section#monthly-net-worth,
-section#weekly-net-worth {
-  width:30%;
-  margin:auto;
-  float:right;
-}
-td {
-  display: table-cell;
-  vertical-align: top;
-	padding: 5px 8px;
-	color: rgb(102,102,153);
-}
-#monthly-expenses .first-period td,
-#monthly-expenses-related .first-period td {
-	border-top: 2px solid rgb(102,120,177);
-  border-collapse: collapse;
-}
-.first-posting td {
-  border-top: 1px dotted rgb(182,190,216);
-  border-collapse: collapse;
-}
-tr:first-child > td {
-  border: none;
-}
-td.amount {
-  white-space: pre;
-  text-align: right;
-  vertical-align: top;
+thead {
+  display: table-header-group;
+  height: 43px;
+  line-height: 22px;
+  margin: 0px;
+  padding: 0px;
+  color: rgb(51,51,153);
+  background-color: rgba(0,0,0,0);
+  outline-color: rgb(51,51,51);
+  outline-style: none;
+  outline-width: 0px;
 }
 th {
   display: table-cell;
@@ -69,27 +52,9 @@ th {
   margin: 0px;
   padding: 10px 8px;
   font-weight: normal;
-  color: rgb(0,51,153);
+  color: rgb(51,51,153);
 	border-bottom: 2px solid rgb(102,120,177);
   border-collapse: collapse;
-}
-#monthly-expenses th, #monthly-expenses-related th {
-  border-bottom: none;
-}
-#cash-flow-balance th {
-  border-bottom: none;
-}
-thead {
-  display: table-header-group;
-  height: 43px;
-  line-height: 22px;
-  margin: 0px;
-  padding: 0px;
-  color: rgb(0,51,153);
-  background-color: rgba(0,0,0,0);
-  outline-color: rgb(51,51,51);
-  outline-style: none;
-  outline-width: 0px;
 }
 tr {
   display: table-row;
@@ -103,9 +68,44 @@ tr:hover td {
   color: rgb(0,0,153);
   background-color: rgb(242,243,255);
 }
+td {
+  display: table-cell;
+  vertical-align: top;
+	padding: 5px 8px;
+	color: rgb(102,102,153);
+}
+.first-posting td {
+  border-top: 1px dotted rgb(182,190,216);
+  border-collapse: collapse;
+}
+tr:first-child > td {
+  border: none;
+}
+td.amount {
+  white-space: pre;
+  text-align: right;
+  vertical-align: top;
+}
 /*svg {
   width: 100%;
 }*/
+#monthly-expenses .first-period td,
+#monthly-expenses-related .first-period td {
+	border-top: 2px solid rgb(102,120,177);
+  border-collapse: collapse;
+}
+#monthly-expenses th, #monthly-expenses-related th {
+  border-bottom: none;
+}
+#cash-flow-balance th {
+  border-bottom: none;
+}
+section#monthly-net-worth,
+section#weekly-net-worth {
+  width:30%;
+  margin:auto;
+  float:right;
+}
 .account {
 }
 .amount {
