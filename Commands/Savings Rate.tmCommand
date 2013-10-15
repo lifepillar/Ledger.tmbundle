@@ -38,7 +38,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
-html = Ledger::Html5::Page.new('Total income and expenses', :css =&gt; THEME)
+html = Ledger::Html5::Page.new('Savings Rate Report', :css =&gt; THEME)
 html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', :class =&gt; 'balance-report')
 report.collapse = true
 report.format = '%(quantity(scrub(display_total)))'

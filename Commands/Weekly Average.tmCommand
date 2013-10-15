@@ -36,7 +36,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
-report.pretty_print('Weekly Average', :wrapper =&gt; 'table',
+report.pretty_print('Weekly Average Report', :wrapper =&gt; 'table',
   :header =&gt; ['Period','Account','Amount','Average'], :id =&gt; 'weekly-average')
 </string>
 	<key>input</key>

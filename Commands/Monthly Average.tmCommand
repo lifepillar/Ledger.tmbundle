@@ -38,7 +38,7 @@ end
 #report.pretty_print('Monthly Average', :wrapper =&gt; 'table',
 #  :header =&gt; ['Period','Account','Amount','Average'], :id =&gt; 'monthly-average')
 
-page = Ledger::Html5::Page.new('Monthly Average', :css =&gt; THEME)
+page = Ledger::Html5::Page.new('Monthly Average Report', :css =&gt; THEME)
 print page.start_html
 print report.run(:html =&gt; true, :wrapper =&gt; 'table',
   :header =&gt; ['Period','Account','Amount','Average'], :id =&gt; 'monthly-average')

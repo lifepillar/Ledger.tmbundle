@@ -34,7 +34,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
-html = Ledger::Html5::Page.new('Pending and uncleared transactions', :css =&gt; THEME)
+html = Ledger::Html5::Page.new('Pending/Uncleared Report', :css =&gt; THEME)
 html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', :title =&gt; 'Pending transactions',
   :header =&gt; ['','Date','Payee','Account','Amount','Balance'], :id =&gt; 'register-pending')
 report.other = ['--uncleared']

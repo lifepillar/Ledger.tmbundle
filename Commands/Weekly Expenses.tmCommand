@@ -34,7 +34,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
-html = Ledger::Html5::Page.new('Weekly Expenses', :css =&gt; THEME)
+html = Ledger::Html5::Page.new('Weekly Expenses Report', :css =&gt; THEME)
 html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', # :title =&gt; 'Expenses sorted by amount',
   :header =&gt; ['Period','Account','Amount','Total'], :id =&gt; 'weekly-expenses')
 report.add_option('--related')

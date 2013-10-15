@@ -37,7 +37,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
-page = Ledger::Html5::Page.new('Net Worth', :css =&gt; THEME)
+page = Ledger::Html5::Page.new('Net Worth Report', :css =&gt; THEME)
 print page.start_html
 print report.run(:html =&gt; true, :wrapper =&gt; 'table', :title =&gt; 'Monthly Net Worth',
   :header =&gt; ['Date','Account','Net worth'], :id =&gt; 'monthly-net-worth')

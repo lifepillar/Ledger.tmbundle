@@ -34,7 +34,7 @@ unless SKIP_DIALOG
   TextMate.exit_discard if not ok
 end
 
-html = Ledger::Html5::Page.new("Cash Flow for #{report.accounts.join(', ')}", :css =&gt; THEME)
+html = Ledger::Html5::Page.new("Cash Flow Report", :css =&gt; THEME)
 html &lt;&lt; report.run(:html =&gt; true, :wrapper =&gt; 'table', :class =&gt; 'balance-report', :id =&gt; 'cash-flow-balance',
 :header =&gt; ['Debit', 'Credit','Balance'])
 html &lt;&lt; '&lt;h2&gt;Details&lt;/h2&gt;'
