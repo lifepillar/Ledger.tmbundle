@@ -1,7 +1,7 @@
 Ledger.tmbundle
 ===============
 
-TextMate support for Ledger 3. [Read about Ledger here](http://github.com/jwiegley/ledger "Home - ledger - GitHub").
+TextMate support for Ledger 3. [Read about Ledger here](http://ledger-cli.org "Home - ledger - GitHub").
 
 For detailed documentation, visit the [wiki page](http://github.com/lifepillar/Ledger.tmbundle/wiki).
 
