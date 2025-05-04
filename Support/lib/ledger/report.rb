@@ -6,6 +6,8 @@ require ENV['TM_SUPPORT_PATH'] + '/lib/ui'
 require ENV["TM_BUNDLE_SUPPORT"] + "/lib/defaults.rb"
 require ENV["TM_BUNDLE_SUPPORT"] + "/lib/ledger/html5.rb"
 
+TM_DIALOG = e_sh ENV['DIALOG'] unless defined?(TM_DIALOG)
+
 module Ledger
   class Report
     attr :ledger
